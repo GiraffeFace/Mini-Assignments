@@ -1,0 +1,87 @@
+---
+title: "Assignment 1"
+author: "Carey Hedges (751546)"
+date: "11 July 2016"
+output: github_document
+---
+## R Markdown
+
+
+"I love Octocat.  She's the coolest cat in town"
+
+![Octocat](C:\Users\Carey Hedges\Desktop\Mini Assignments - Stats\octocat.png)
+
+## Assignment 2
+
+```{r quick_look, echo=TRUE}
+
+
+data (anscombe)
+dim (anscombe)
+head (anscombe)
+tail (anscombe)
+summary (anscombe)
+
+```
+
+
+## Assignment 3
+
+```{r xy_plot, echo = FALSE}
+knitr::opts_chunk$set(fig.width = 8, 
+                      fig.height = 8, 
+                      fig.align = "center", 
+                      dev = 'png', 
+                      fig.path = './figures/')
+
+data (anscombe)
+plot(anscombe$x1, anscombe$y1)
+abline (lm (y1~x1, data = anscombe))
+
+
+
+```
+ 
+## Assignment 4
+
+### Code Chunk 4
+
+```{r data_import, echo = TRUE}
+
+df <- read.csv('analgesic.csv')
+
+```
+
+### Code Chunk 5
+
+```{r data_summary, echo = TRUE}
+dim (df)
+colnames (df)
+head (df)
+tail (df)
+summary (df)
+```
+
+### Code Chunk 6
+
+```{r data_tidy, echo = TRUE}
+library(tidyr)
+library(dplyr)
+
+df2 <- gather(df,"Measurement", "Value", Measurement_1:Measurement_3) #Change wide to long
+df2
+
+df3 <- group_by (df2, Group) #Group by Placebo and Analgesic
+df3
+
+df4 <- group_by (df3, ID) #Read by ID
+df4
+summarise (df4, mean(Value)) #Mean of all replicates
+
+```
+
+
+
+
+
+
