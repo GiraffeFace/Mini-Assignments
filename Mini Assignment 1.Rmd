@@ -2,7 +2,7 @@
 title: "Assignment 1"
 author: "Carey Hedges (751546)"
 date: "11 July 2016"
-output: word_document
+output: github_document
 ---
 ## R Markdown
 
@@ -11,9 +11,10 @@ output: word_document
 
 ![Octocat](C:\Users\Carey Hedges\Desktop\Mini Assignments - Stats\octocat.png)
 
+## Assignment 2
+
 ```{r quick_look, echo=TRUE}
 
-## Assignment 2
 
 data (anscombe)
 dim (anscombe)
