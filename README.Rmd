@@ -18,6 +18,7 @@ output: github_document
 
 data (anscombe)
 dim (anscombe)
+colnames (anscombe)
 head (anscombe)
 tail (anscombe)
 summary (anscombe)
