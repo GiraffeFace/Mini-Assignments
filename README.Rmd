@@ -32,7 +32,7 @@ summary (anscombe)
 knitr::opts_chunk$set(fig.width = 8, 
                       fig.height = 8, 
                       fig.align = "center", 
-                      dev = 'png', 
+                      dev = 'svg', 
                       fig.path = './figures/')
 
 data (anscombe)

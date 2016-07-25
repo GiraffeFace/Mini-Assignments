@@ -1,0 +1,154 @@
+---
+title: "Untitled"
+output: github_document
+author: Carey Hedges
+---
+# Assignment 4
+ 
+## Question 1
+ 
+ Ho: Chicken feed has no effect on the weight of chickens 
+ H1: Chicken feed has an effect on the weight of chickens
+ 
+ In order to evaluate this claim, an ANOVA will need to be used with a posthoc pairwise t-test to evaluate which chicken feed are better for plumper chickens.
+ 
+ This test assumes that the data are parametric and that there are greater than 3 groups.
+ 
+```{r chicken weights, echo = FALSE}
+knitr::opts_chunk$set(
+fig.path = './figures2',
+fig.align = 'centre')
+
+library (dplyr)
+library (tidyr)
+library (knitr)
+
+cw <- read.csv ('chick-weights.csv') #Read Excel Doc and look at data
+head(cw)
+colnames(cw)
+dim (cw)
+
+boxplot (weight~feed, data = cw, col = "red", xlab = 'Feed', ylab = 'Weight', main= "Boxplots of Chicken Weights versus Feed")
+
+cw2 <- aov(weight~feed, data = cw) #Assign test to variable to allow for summary analysis
+summary (cw2)
+
+pairwise.t.test (chickwts$weight, chickwts$feed, p.adjust.method = 'holm', paired =FALSE) #Always posthoc test for groups
+
+```
+
+The anova suggests that the feed affects the weight of the chickens.  p<0.001, (df=5, F = 5.94 e-10).
+
+The posthoc test indicates that there is a significant difference between casein and horsebean and linseed feed, horsebean and linseed are different to meatmeal, casein and horsebean are different to soybean, horsebean and linseed and soybean are different to sunflower feed. 
+
+## Question 2
+
+Ho:  There is no difference between nurse and machine evaluation of blood-pressure
+H1:  There is a difference in the measurement of blood-pressure from nurse to machine
+
+An unpaired t.test is needed to understand whether there is a difference between machine evaluation of blood-pressure and the nurse's.
+
+This test assumes that the data is parametric and there are greater than 30 measurments.
+
+```{r blood pressure, echo = TRUE}
+knitr::opts_chunk$set(
+fig.path = './figures2',
+fig.align = 'centre')
+
+library (dplyr)
+library (tidyr)
+library (knitr)
+
+bp <- read.csv ('blood-pressure.csv')
+
+head (bp)
+colnames (bp)
+
+bp2 <- gather (bp, 'Replicates', 'Value', SBP.replicate.1:SBP.replicate.3) #Gathering data to tidy for a mean
+bp2
+
+bp3 <- group_by (bp2, Method) # grouping methods 
+bp3
+
+bp4 <- group_by (bp3, Subject) #Telling R that subject number one is always the same subject
+bp4
+
+plot(x = bp4$Method, y = bp4$Value, col = 'pink')
+
+bp5 <- summarise (bp4, mean (Value))
+bp5
+
+bp6 <- spread (bp4, 'Method', Value)
+bp6
+
+bp7 <- group_by (bp6, Subject) 
+bp7
+
+bp8 <- summarise (bp7, mean(Nurse), mean (Device))
+bp8
+
+plot(bp8$'mean(Nurse)', bp8$'mean(Device)', main = 'Correlation between Device and Nurse Measurement of Blood-Pressure', xlab = 'Nurse', ylab = 'Device', col = 'turquoise', pch = 1, abline(lm(bp8$'mean(Device)'~bp8$'mean(Nurse)')))
+
+
+
+```
+
+## Question 3
+
+Ho: Gastroenteritis is not caused by contaminated water
+H1: Gastroenteritis could be caused by contaminated water
+
+A  Chi-squared analysis is necessary to establish if there is a difference in water consumption and illness. 
+
+The assumptions that underpin this test are
+
+```{r Gastroenteritis, echo = TRUE}
+knitr::opts_chunk()
+
+library (dplyr)
+library (tidyr)
+library (knitr)
+
+gi <- read.csv ('gastroenteritis.csv')
+colnames(gi)
+summary(gi)
+head(gi)
+
+filter(spread(gi, 'Consumption'), 'Amount')
+summarise(group_by(gi, 'Consumption'), 'Outcome')
+
+
+
+
+
+
+```
+
+## Question 4
+
+Ho: The Serotnin receptor blocker has no effect
+H1: The seotonin has an effect
+
+A paired t test is needed to determine the difference
+
+```{r Nausea, echo = TRUE}
+knitr:: opts_chunk ()
+
+library (dplyr)
+library (tidyr)
+library (knitr)
+
+ N <- read.csv ('nausea.csv')
+ N
+ dim (N)
+ 
+ 
+ 
+ 
+ 
+
+
+
+```
+
+
