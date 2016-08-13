@@ -356,3 +356,261 @@ summarise (df4, mean(Value)) #Mean of all replicates
     ## 9      9    22.66667
     ## 10    10    24.00000
     ## ..   ...         ...
+
+Assignment 5
+============
+
+Question 1 - Chicken Weights
+----------------------------
+
+Ho: Chicken feed has no effect on the rate of chicken growth. H1: Chicken feed has an effect on the rate of chicken growth.
+
+In order to evaluate this claim, an ANOVA will need to be used with a posthoc pairwise t-test to evaluate which chicken feed are better for plumper chickens.
+
+This test assumes that the data are parametric and that there are greater than 3 groups.
+
+``` r
+library (dplyr)
+library (tidyr)
+library (knitr)
+
+cw <- read.csv ("C:/Users/Carey Hedges/Desktop/Assignment 4 - Stats/chick-weights.csv") #Read Excel Doc and look at data
+head(cw)
+```
+
+    ##   weight      feed
+    ## 1    179 horsebean
+    ## 2    160 horsebean
+    ## 3    136 horsebean
+    ## 4    227 horsebean
+    ## 5    217 horsebean
+    ## 6    168 horsebean
+
+``` r
+colnames(cw)
+```
+
+    ## [1] "weight" "feed"
+
+``` r
+dim (cw)
+```
+
+    ## [1] 71  2
+
+``` r
+boxplot (weight~feed, data = cw, col = "red", xlab = 'Feed', ylab = 'Chicken Weight', main= "Boxplots of Chicken Weights versus Feed")
+```
+
+<img src="./figures/chicken weights-1.png"  />
+
+``` r
+cw2 <- aov(weight~feed, data = cw) #Assign test to variable to allow for summary analysis
+summary (cw2)
+```
+
+    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## feed         5 231129   46226   15.37 5.94e-10 ***
+    ## Residuals   65 195556    3009                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+pairwise.t.test (chickwts$weight, chickwts$feed, p.adjust.method = 'holm', paired =FALSE) #Always posthoc test for groups
+```
+
+    ## 
+    ##  Pairwise comparisons using t tests with pooled SD 
+    ## 
+    ## data:  chickwts$weight and chickwts$feed 
+    ## 
+    ##           casein  horsebean linseed meatmeal soybean
+    ## horsebean 2.9e-08 -         -       -        -      
+    ## linseed   0.00016 0.09435   -       -        -      
+    ## meatmeal  0.18227 9.0e-05   0.09435 -        -      
+    ## soybean   0.00532 0.00298   0.51766 0.51766  -      
+    ## sunflower 0.81249 1.2e-08   8.1e-05 0.13218  0.00298
+    ## 
+    ## P value adjustment method: holm
+
+The anova suggests that the feed affects the rate of chicken growth F(2,65) = 15.37, p&lt;0.001.
+
+The posthoc test indicates that there is a significant difference between different types of feed. Casein and Sunflower feed are comparible in increasing rate of chicken growth. Casein and Sunflower feed is slightly more effective than meatmeal for increase rate of chicken growth. Meatmeal is only slightly more effective than linseed and soybean at increasing rate of chicken growth. The least effective for increasing the rate of chicken growth is Horsebean feed. (Refer to pairwise t.test for test statistics).
+
+Question 2 - The Heat Zone
+--------------------------
+
+Ho: Gastroenteritis is not caused by contaminated water. H1: Gastroenteritis could be caused by contaminated water.
+
+A Chi-squared analysis is necessary to establish if there is a difference in water consumption and illness.
+
+The assumptions that underpin this test are:
+
+1.  Values are independent of one another
+2.  Sampling is random
+3.  Observed frequencies are approximated by normal distribution
+4.  Expected values should be 5 in 80% of the cells
+
+``` r
+library (dplyr)
+library (tidyr)
+library (knitr)
+library (ggplot2)
+```
+
+    ## Warning: package 'ggplot2' was built under R version 3.3.1
+
+``` r
+gi <- read.csv ("C:/Users/Carey Hedges/Desktop/Assignment 4 - Stats/gastroenteritis.csv")# Read excel document in order to work with data in R Studio
+summary(gi)
+```
+
+    ##              Consumption     Outcome   
+    ##  < 1 glasses/day   :160   ill    :569  
+    ##  < 4 glasses/day   :411   not ill:525  
+    ##  1 to 4 glasses/day:523
+
+``` r
+head(gi)
+```
+
+    ##       Consumption Outcome
+    ## 1 < 1 glasses/day     ill
+    ## 2 < 1 glasses/day     ill
+    ## 3 < 1 glasses/day     ill
+    ## 4 < 1 glasses/day     ill
+    ## 5 < 1 glasses/day     ill
+    ## 6 < 1 glasses/day     ill
+
+``` r
+tail(gi)
+```
+
+    ##          Consumption Outcome
+    ## 1089 < 4 glasses/day not ill
+    ## 1090 < 4 glasses/day not ill
+    ## 1091 < 4 glasses/day not ill
+    ## 1092 < 4 glasses/day not ill
+    ## 1093 < 4 glasses/day not ill
+    ## 1094 < 4 glasses/day not ill
+
+``` r
+gi2 <- table(gi$Outcome, gi$Consumption) #Cross Tabulate the data
+gi2
+```
+
+    ##          
+    ##           < 1 glasses/day < 4 glasses/day 1 to 4 glasses/day
+    ##   ill                  39             265                265
+    ##   not ill             121             146                258
+
+``` r
+barplot (gi2, col = c("purple", "blue"), main = "Water Consumption and Illness", xlab = "Water Consumption", ylab = "Proportion of Ill Patients")
+legend ('topleft', inset = 0.05, legend = c("Ill", "Not Ill"), fill = c("purple", "blue"), box.col = 'white') #As there are multiple variables, clarity is required by use of colour and a legend.
+```
+
+<img src="./figures/Gastroenteritis-1.png"  />
+
+``` r
+chisq.test(gi2, correct = FALSE) #Sample size is large and does not require a Yates correction
+```
+
+    ## 
+    ##  Pearson's Chi-squared test
+    ## 
+    ## data:  gi2
+    ## X-squared = 74.925, df = 2, p-value < 2.2e-16
+
+Results for the test indicate that there is a significant effect of water consumption on the development of illness X-squared|(2, n=1094) = 74.93, p&lt;0.001. Data suggest that the water consumption is linked to the likelihood of illness. Analysis of the barplot indicates that drinking more than one glass of water a day increases the likelihood of illness. It is likely that contaminated water causes gastroenteritis.
+
+Question 3 - Nausea
+-------------------
+
+Ho: The serotonin receptor blocker has no effect on nausea management. H1: The serotonin receptor blocker has an effect on managing nausea.
+
+A Wilcoxon sign rank test is most appropriate. This is due to the small sample size and the likelihood that normality in this population cannot be assumed.
+
+This test assumes that the population is effectively matched, the sample distribution is representative of the population from which the sample is drawn and that the error from the median is independent.
+
+``` r
+library (dplyr)
+library (tidyr)
+library (knitr)
+
+
+ N <- read.csv ('C:/Users/Carey Hedges/Desktop/Assignment 4 - Stats/nausea.csv')
+ N
+```
+
+    ##   Patient Nausea_before Nausea_after
+    ## 1       1             3            2
+    ## 2       2             4            0
+    ## 3       3             6            1
+    ## 4       4             2            3
+    ## 5       5             2            1
+    ## 6       6             4            1
+    ## 7       7             5            0
+    ## 8       8             6           40
+
+``` r
+ dim (N)
+```
+
+    ## [1] 8 3
+
+``` r
+ N2 <- N [-8,] #Value is outside the subjective numerical scale.  It cannot be assumed that the data represents a score of "4" or of "0".  The data capture was incorrect.  The row needs to be removed in order to appropriately assess statistical significance. 
+ N2
+```
+
+    ##   Patient Nausea_before Nausea_after
+    ## 1       1             3            2
+    ## 2       2             4            0
+    ## 3       3             6            1
+    ## 4       4             2            3
+    ## 5       5             2            1
+    ## 6       6             4            1
+    ## 7       7             5            0
+
+``` r
+ N3<- select (N2, Nausea_before, Nausea_after) # Isolate the data required for staistical test.
+ N3
+```
+
+    ##   Nausea_before Nausea_after
+    ## 1             3            2
+    ## 2             4            0
+    ## 3             6            1
+    ## 4             2            3
+    ## 5             2            1
+    ## 6             4            1
+    ## 7             5            0
+
+``` r
+plot(N2$Patient, N2$Nausea_before, main = "Trend in Nausea before and after Serotonin Administration",  col = "black", xlab = "Subject", ylab = "Nausea Rating", ylim = c(0,10), xlim = c(0, 8), pch = 2) #Plot the initial values
+
+points(N2$Patient, N2$Nausea_after, col = "red", pch = 8) #Add points to the already plotted graph for comparison
+
+legend ("topleft", inset = 0.05, legend = c("Nausea Before", "Nausea After"), pch = c(2, 8), col = c('black', 'red')) #Add a legend for ease of reference
+
+lines(N2$Patient, N2$Nausea_before) #Illustrate a trend in the reported values
+lines(N2$Patient, N2$Nausea_after, col = 'red')
+```
+
+<img src="./figures/Nausea-1.png"  />
+
+``` r
+ wilcox.test (N3$Nausea_before, N3$Nausea_after, paired = TRUE)
+```
+
+    ## Warning in wilcox.test.default(N3$Nausea_before, N3$Nausea_after, paired =
+    ## TRUE): cannot compute exact p-value with ties
+
+    ## 
+    ##  Wilcoxon signed rank test with continuity correction
+    ## 
+    ## data:  N3$Nausea_before and N3$Nausea_after
+    ## V = 26, p-value = 0.04983
+    ## alternative hypothesis: true location shift is not equal to 0
+
+Results from analysis indicate that serotonin tablets have a significant effect on nausea management w(7) = 26, p &lt; 0.05 (p=0.04983). The graphical data suggest that the serotonin has a beneficial effect to lower symptoms of nausea. Further investigations with larger sample sizes will be required in order to establish the value in serotonin administration for the management of nausea.

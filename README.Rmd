@@ -92,10 +92,8 @@ summarise (df4, mean(Value)) #Mean of all replicates
  
  This test assumes that the data are parametric and that there are greater than 3 groups.
  
-```{r chicken weights, echo = FALSE}
-knitr::opts_chunk$set(
-fig.path = './figures/',
-fig.align = 'centre')
+```{r chicken weights, echo = TRUE, fig.align = 'centre', dev = "png", fig.path = './figures/'}
+
 
 library (dplyr)
 library (tidyr)
@@ -133,7 +131,7 @@ The assumptions that underpin this test are:
 3. Observed frequencies are approximated by normal distribution
 4. Expected values should be 5 in 80% of the cells
 
-```{r Gastroenteritis, echo = TRUE, fig.align= "centre", dev = "svg"}
+```{r Gastroenteritis, echo = TRUE, fig.align= "centre", dev = "png", fig.path = './figures/'}
 
 library (dplyr)
 library (tidyr)
@@ -168,7 +166,7 @@ A Wilcoxon sign rank test is most appropriate. This is due to the small sample s
 
 This test assumes that the population is effectively matched, the sample distribution is representative of the population from which the sample is drawn and that the error from the median is independent.   
 
-```{r Nausea, echo = TRUE, fig.align = "centre", dev = 'svg', fig.height= 10, fig.width=10}
+```{r Nausea, echo = TRUE, fig.align = "centre", dev = "png", fig.path = './figures/', fig.height= 10, fig.width=10}
 
 library (dplyr)
 library (tidyr)
