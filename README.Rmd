@@ -81,7 +81,122 @@ summarise (df4, mean(Value)) #Mean of all replicates
 
 ```
 
+# Assignment 5
+ 
+## Question 1 - Chicken Weights
+ 
+ Ho: Chicken feed has no effect on the rate of chicken growth.
+ H1: Chicken feed has an effect on the rate of chicken growth.
+ 
+ In order to evaluate this claim, an ANOVA will need to be used with a posthoc pairwise t-test to evaluate which chicken feed are better for plumper chickens.
+ 
+ This test assumes that the data are parametric and that there are greater than 3 groups.
+ 
+```{r chicken weights, echo = FALSE}
+knitr::opts_chunk$set(
+fig.path = './figures/',
+fig.align = 'centre')
 
+library (dplyr)
+library (tidyr)
+library (knitr)
+
+cw <- read.csv ("C:/Users/Carey Hedges/Desktop/Assignment 4 - Stats/chick-weights.csv") #Read Excel Doc and look at data
+head(cw)
+colnames(cw)
+dim (cw)
+
+boxplot (weight~feed, data = cw, col = "red", xlab = 'Feed', ylab = 'Chicken Weight', main= "Boxplots of Chicken Weights versus Feed")
+
+cw2 <- aov(weight~feed, data = cw) #Assign test to variable to allow for summary analysis
+summary (cw2)
+
+pairwise.t.test (chickwts$weight, chickwts$feed, p.adjust.method = 'holm', paired =FALSE) #Always posthoc test for groups
+
+```
+
+The anova suggests that the feed affects the rate of chicken growth F(2,65) = 15.37, p<0.001.
+
+The posthoc test indicates that there is a significant difference between different types of feed.  Casein and Sunflower feed are comparible in increasing rate of chicken growth.  Casein and Sunflower feed is slightly more effective than meatmeal for increase rate of chicken growth. Meatmeal is only slightly more effective than linseed and soybean at increasing rate of chicken growth.  The least effective for increasing the rate of chicken growth is Horsebean feed. (Refer to pairwise t.test for test statistics).
+
+## Question 2 - The Heat Zone
+
+Ho: Gastroenteritis is not caused by contaminated water.
+H1: Gastroenteritis could be caused by contaminated water.
+
+A  Chi-squared analysis is necessary to establish if there is a difference in water consumption and illness. 
+
+The assumptions that underpin this test are: 
+
+1. Values are independent of one another 
+2. Sampling is random
+3. Observed frequencies are approximated by normal distribution
+4. Expected values should be 5 in 80% of the cells
+
+```{r Gastroenteritis, echo = TRUE, fig.align= "centre", dev = "svg"}
+
+library (dplyr)
+library (tidyr)
+library (knitr)
+library (ggplot2)
+
+gi <- read.csv ("C:/Users/Carey Hedges/Desktop/Assignment 4 - Stats/gastroenteritis.csv")# Read excel document in order to work with data in R Studio
+summary(gi)
+head(gi)
+tail(gi)
+
+gi2 <- table(gi$Outcome, gi$Consumption) #Cross Tabulate the data
+gi2
+
+barplot (gi2, col = c("purple", "blue"), main = "Water Consumption and Illness", xlab = "Water Consumption", ylab = "Proportion of Ill Patients")
+legend ('topleft', inset = 0.05, legend = c("Ill", "Not Ill"), fill = c("purple", "blue"), box.col = 'white') #As there are multiple variables, clarity is required by use of colour and a legend.
+
+chisq.test(gi2, correct = FALSE) #Sample size is large and does not require a Yates correction
+
+```
+
+Results for the test indicate that there is a significant effect of water consumption on the development of illness X-squared|(2, n=1094) = 74.93, p<0.001. 
+Data suggest that the water consumption is linked to the likelihood of illness.  Analysis of the barplot indicates that drinking more than one glass of water a day increases the likelihood of illness. It is likely that contaminated water causes gastroenteritis. 
+
+
+## Question 3 - Nausea
+
+Ho: The serotonin receptor blocker has no effect on nausea management.
+H1: The serotonin receptor blocker has an effect on managing nausea.
+
+A Wilcoxon sign rank test is most appropriate. This is due to the small sample size and the likelihood that normality in this population cannot be assumed.  
+
+This test assumes that the population is effectively matched, the sample distribution is representative of the population from which the sample is drawn and that the error from the median is independent.   
+
+```{r Nausea, echo = TRUE, fig.align = "centre", dev = 'svg', fig.height= 10, fig.width=10}
+
+library (dplyr)
+library (tidyr)
+library (knitr)
+
+
+ N <- read.csv ('C:/Users/Carey Hedges/Desktop/Assignment 4 - Stats/nausea.csv')
+ N
+ dim (N)
+ N2 <- N [-8,] #Value is outside the subjective numerical scale.  It cannot be assumed that the data represents a score of "4" or of "0".  The data capture was incorrect.  The row needs to be removed in order to appropriately assess statistical significance. 
+ N2
+ N3<- select (N2, Nausea_before, Nausea_after) # Isolate the data required for staistical test.
+ N3
+ 
+plot(N2$Patient, N2$Nausea_before, main = "Trend in Nausea before and after Serotonin Administration",  col = "black", xlab = "Subject", ylab = "Nausea Rating", ylim = c(0,10), xlim = c(0, 8), pch = 2) #Plot the initial values
+
+points(N2$Patient, N2$Nausea_after, col = "red", pch = 8) #Add points to the already plotted graph for comparison
+
+legend ("topleft", inset = 0.05, legend = c("Nausea Before", "Nausea After"), pch = c(2, 8), col = c('black', 'red')) #Add a legend for ease of reference
+
+lines(N2$Patient, N2$Nausea_before) #Illustrate a trend in the reported values
+lines(N2$Patient, N2$Nausea_after, col = 'red')
+ 
+ wilcox.test (N3$Nausea_before, N3$Nausea_after, paired = TRUE)
+ 
+```
+
+Results from analysis indicate that serotonin tablets have a significant effect on nausea management w(7) = 26, p < 0.05 (p=0.04983).  The graphical data suggest that the serotonin has a beneficial effect to lower symptoms of nausea.  Further investigations with larger sample sizes will be required in order to establish the value in serotonin administration for the management of nausea. 
 
 
 
