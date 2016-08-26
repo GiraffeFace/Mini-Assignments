@@ -819,6 +819,6 @@ abline(h = 0,
 #The plot of standard deviations indicates a conical distribution of deviation, where the gratest deviation is at higher fitted values and a smaller deviation is at lower values. 
 ```
 
-The results indicate that there is a fairly strong negative correlation between average house price and interest rate (r = -0.5766, p = 0.01937). However, a linear regression model fit to this data indicates that the data is heteroskedastic and not drawn from normal populations, as such although a linear regression model does fit the data (p=0.01937), the underlying assumptions for the test are violated and a model should not be used.
+The results indicate that there is a fairly strong negative correlation between average house price and interest rate (r = -0.5766, p = 0.01937). However, a linear regression model fit to this data indicates that the data is heteroskedastic and not drawn from normal populations, as such although a linear regression model does fit the data b|= 1.024, t(14) = -2.641, p=0.01937 and r2 = 0.2848, F(1,14) = 6.974, p = 0.01937, the underlying assumptions for the test are violated and a model should not be used.
 
 High interest rates are associated with cheaper homes and vice versa, in this dataset. The predictive value of this data, however, is not beneficial.
