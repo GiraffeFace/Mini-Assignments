@@ -736,7 +736,7 @@ text(10.5, 350000, labels = 'r = - 0.05766')
 text(10.5, 340000, labels = 'p = 0.01937')
 ```
 
-<img src="./figures_House Prices and Correlations-1.png"  />
+<img src="./figures/_House Prices and Correlations-1.png"  />
 
 ``` r
 #It is possible that these points are correlated as is shown by graphical representation.  A test needs to be performed in order to establish whether there, in fact, is a correlation. 
@@ -797,7 +797,7 @@ qqline(modHP4$residuals,
        lty = 3)
 ```
 
-<img src="./figures_House Prices and Correlations-2.png"  />
+<img src="./figures/_House Prices and Correlations-2.png"  />
 
 ``` r
 #The data deviates from the normal.
@@ -813,7 +813,7 @@ abline(h = 0,
        col = "gray")
 ```
 
-<img src="./figures_House Prices and Correlations-3.png"  />
+<img src="./figures/_House Prices and Correlations-3.png"  />
 
 ``` r
 #The plot of standard deviations indicates a conical distribution of deviation, where the gratest deviation is at higher fitted values and a smaller deviation is at lower values. 

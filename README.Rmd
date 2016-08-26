@@ -209,7 +209,7 @@ A linear regression will be performed.  The assumptions that underlie this test 
 4) Residuals are normally distributed and are homoskedastic (same variance).
 
 
-```{r_House Prices and Correlations, echo = TRUE, fig.align='centre', fig.height=10, fig.width=10, dev = 'png', fig.path = './figures'}
+```{r_House Prices and Correlations, echo = TRUE, fig.align='centre', fig.height=10, fig.width=10, dev = 'png', fig.path = './figures/'}
 
 library (dplyr)
 library (tidyr)
