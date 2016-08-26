@@ -196,6 +196,95 @@ lines(N2$Patient, N2$Nausea_after, col = 'red')
 
 Results from analysis indicate that serotonin tablets have a significant effect on nausea management w(7) = 26, p < 0.05 (p=0.04983).  The graphical data suggest that the serotonin has a beneficial effect to lower symptoms of nausea.  Further investigations with larger sample sizes will be required in order to establish the value in serotonin administration for the management of nausea. 
 
+#Assignment 6
 
+Ho:There is an association between interest rate and house price.
+H1:There is no association between interest rate and house price.
+
+A linear regression will be performed.  The assumptions that underlie this test are: 
+
+1) A trend exists between house cost and interest rate.
+2) Observations are independent of one another.
+3) Measurements of the independent variable have been made correctly.
+4) Residuals are normally distributed and are homoskedastic (same variance).
+
+
+```{r_House Prices and Correlations, echo = TRUE, fig.align='centre', fig.height=10, fig.width=10, dev = 'png', fig.path = './figures'}
+
+library (dplyr)
+library (tidyr)
+library (knitr)
+
+HP <- read.csv('C:/Users/Carey Hedges/Desktop/Mini Assignments - Stats/housing-prices.csv')
+
+head(HP)
+tail (HP)
+summary (HP)
+
+#HP have NA values in the 17th row - these need to be excluded 
+
+HP2 <- HP[-17,]
+HP2
+
+#Data is not tidy, interest rates should be together to better visualise the data.
+
+HP3 <- arrange (HP2, desc(interest_rate))
+HP3
+
+plot(HP3, 
+     main = "Relationship between Average House Price and Interest Rate",
+     xlab = "Interest Rate", 
+     ylab = "Average House Price (USD)",
+     xlim = c(5,11), 
+     ylim = c(100000, 400000), 
+     pch = 21, 
+     col = 'blue') #lm lines should not be used to graphically represent the data as a linear model is not accurate to use for this data.  Representing such data with a linear model line is misleading (see calculations that follow).
+
+#Graphs that are published require both r and p values to be quoted.
+
+text(10.5, 350000, labels = 'r = - 0.05766') 
+text(10.5, 340000, labels = 'p = 0.01937')
+
+#It is possible that these points are correlated as is shown by graphical representation.  A test needs to be performed in order to establish whether there, in fact, is a correlation. 
+
+CT <- cor.test(HP3$interest_rate, HP3$median_house_price_USD,
+               method = 'pearson') #There are no leverage points or outliers, thus a Pearson's correlation should be used.
+CT
+
+#Results of correlation analysis indicate that there is a relatively strong negative correlation.  As there is a correlation, a regression analysis can be performed to develop a model that could be involved in possible prediction of further values and interest rates within the data range. 
+
+modHP4 <- lm(HP3)
+summary (modHP4)
+
+#According to the test assumptions residuals need to be normally distributed and homoskedastic.  We need to test these assumptions.  
+
+#Test for Normal Distribution
+
+qqnorm(modHP4$residuals, 
+       main = "Data Residuals",
+       pch = 16)
+qqline(modHP4$residuals, 
+       col = "red", 
+       lty = 3)
+
+#The data deviates from the normal.
+
+#Test for Homoskedasticity
+
+plot(x = modHP4$fitted, y = modHP4$residuals,
+     main = "Standard Deviation Across Measures",
+     xlab = 'Fitted Values', 
+     ylab = 'Residual Values',
+     pch = 16)
+abline(h = 0, 
+       col = "gray")
+
+#The plot of standard deviations indicates a conical distribution of deviation, where the gratest deviation is at higher fitted values and a smaller deviation is at lower values. 
+
+```
+
+The results indicate that there is a fairly strong negative correlation between average house price and interest rate (r = -0.5766, p = 0.01937).  However, a linear regression model fit to this data indicates that the data is heteroskedastic and not drawn from normal populations, as such although a linear regression model does fit the data (p=0.01937), the underlying assumptions for the test are violated and a model should not be used.  
+
+High interest rates are associated with cheaper homes and vice versa, in this dataset.  The predictive value of this data, however, is not beneficial. 
 
 

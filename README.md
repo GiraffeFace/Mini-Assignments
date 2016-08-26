@@ -614,3 +614,211 @@ lines(N2$Patient, N2$Nausea_after, col = 'red')
     ## alternative hypothesis: true location shift is not equal to 0
 
 Results from analysis indicate that serotonin tablets have a significant effect on nausea management w(7) = 26, p &lt; 0.05 (p=0.04983). The graphical data suggest that the serotonin has a beneficial effect to lower symptoms of nausea. Further investigations with larger sample sizes will be required in order to establish the value in serotonin administration for the management of nausea.
+
+Assignment 6
+============
+
+Ho:There is an association between interest rate and house price. H1:There is no association between interest rate and house price.
+
+A linear regression will be performed. The assumptions that underlie this test are:
+
+1.  A trend exists between house cost and interest rate.
+2.  Observations are independent of one another.
+3.  Measurements of the independent variable have been made correctly.
+4.  Residuals are normally distributed and are homoskedastic (same variance).
+
+``` r
+library (dplyr)
+library (tidyr)
+library (knitr)
+
+HP <- read.csv('C:/Users/Carey Hedges/Desktop/Mini Assignments - Stats/housing-prices.csv')
+
+head(HP)
+```
+
+    ##   interest_rate median_house_price_USD
+    ## 1            10                 183800
+    ## 2            10                 183200
+    ## 3            10                 174900
+    ## 4             9                 173500
+    ## 5             8                 172900
+    ## 6             7                 173200
+
+``` r
+tail (HP)
+```
+
+    ##    interest_rate median_house_price_USD
+    ## 12             7                 203200
+    ## 13             8                 230200
+    ## 14             7                 258200
+    ## 15             7                 309800
+    ## 16             6                 329800
+    ## 17            NA                     NA
+
+``` r
+summary (HP)
+```
+
+    ##  interest_rate   median_house_price_USD
+    ##  Min.   : 6.00   Min.   :169700        
+    ##  1st Qu.: 7.00   1st Qu.:173425        
+    ##  Median : 8.00   Median :180550        
+    ##  Mean   : 8.00   Mean   :204756        
+    ##  3rd Qu.: 8.25   3rd Qu.:209950        
+    ##  Max.   :10.00   Max.   :329800        
+    ##  NA's   :1       NA's   :1
+
+``` r
+#HP have NA values in the 17th row - these need to be excluded 
+
+HP2 <- HP[-17,]
+HP2
+```
+
+    ##    interest_rate median_house_price_USD
+    ## 1             10                 183800
+    ## 2             10                 183200
+    ## 3             10                 174900
+    ## 4              9                 173500
+    ## 5              8                 172900
+    ## 6              7                 173200
+    ## 7              8                 173200
+    ## 8              8                 169700
+    ## 9              8                 174500
+    ## 10             8                 177900
+    ## 11             7                 188100
+    ## 12             7                 203200
+    ## 13             8                 230200
+    ## 14             7                 258200
+    ## 15             7                 309800
+    ## 16             6                 329800
+
+``` r
+#Data is not tidy, interest rates should be together to better visualise the data.
+
+HP3 <- arrange (HP2, desc(interest_rate))
+HP3
+```
+
+    ##    interest_rate median_house_price_USD
+    ## 1             10                 183800
+    ## 2             10                 183200
+    ## 3             10                 174900
+    ## 4              9                 173500
+    ## 5              8                 172900
+    ## 6              8                 173200
+    ## 7              8                 169700
+    ## 8              8                 174500
+    ## 9              8                 177900
+    ## 10             8                 230200
+    ## 11             7                 173200
+    ## 12             7                 188100
+    ## 13             7                 203200
+    ## 14             7                 258200
+    ## 15             7                 309800
+    ## 16             6                 329800
+
+``` r
+plot(HP3, 
+     main = "Relationship between Average House Price and Interest Rate",
+     xlab = "Interest Rate", 
+     ylab = "Average House Price (USD)",
+     xlim = c(5,11), 
+     ylim = c(100000, 400000), 
+     pch = 21, 
+     col = 'blue') #lm lines should not be used to graphically represent the data as a linear model is not accurate to use for this data.  Representing such data with a linear model line is misleading (see calculations that follow).
+
+#Graphs that are published require both r and p values to be quoted.
+
+text(10.5, 350000, labels = 'r = - 0.05766') 
+text(10.5, 340000, labels = 'p = 0.01937')
+```
+
+<img src="./figures_House Prices and Correlations-1.png"  />
+
+``` r
+#It is possible that these points are correlated as is shown by graphical representation.  A test needs to be performed in order to establish whether there, in fact, is a correlation. 
+
+CT <- cor.test(HP3$interest_rate, HP3$median_house_price_USD,
+               method = 'pearson') #There are no leverage points or outliers, thus a Pearson's correlation should be used.
+CT
+```
+
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  HP3$interest_rate and HP3$median_house_price_USD
+    ## t = -2.6409, df = 14, p-value = 0.01937
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.8339619 -0.1133269
+    ## sample estimates:
+    ##        cor 
+    ## -0.5766386
+
+``` r
+#Results of correlation analysis indicate that there is a relatively strong negative correlation.  As there is a correlation, a regression analysis can be performed to develop a model that could be involved in possible prediction of further values and interest rates within the data range. 
+
+modHP4 <- lm(HP3)
+summary (modHP4)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = HP3)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.4316 -0.4467 -0.3285  0.4708  1.7133 
+    ## 
+    ## Coefficients:
+    ##                          Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)             1.080e+01  1.091e+00   9.900 1.06e-07 ***
+    ## median_house_price_USD -1.368e-05  5.180e-06  -2.641   0.0194 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 1.024 on 14 degrees of freedom
+    ## Multiple R-squared:  0.3325, Adjusted R-squared:  0.2848 
+    ## F-statistic: 6.974 on 1 and 14 DF,  p-value: 0.01937
+
+``` r
+#According to the test assumptions residuals need to be normally distributed and homoskedastic.  We need to test these assumptions.  
+
+#Test for Normal Distribution
+
+qqnorm(modHP4$residuals, 
+       main = "Data Residuals",
+       pch = 16)
+qqline(modHP4$residuals, 
+       col = "red", 
+       lty = 3)
+```
+
+<img src="./figures_House Prices and Correlations-2.png"  />
+
+``` r
+#The data deviates from the normal.
+
+#Test for Homoskedasticity
+
+plot(x = modHP4$fitted, y = modHP4$residuals,
+     main = "Standard Deviation Across Measures",
+     xlab = 'Fitted Values', 
+     ylab = 'Residual Values',
+     pch = 16)
+abline(h = 0, 
+       col = "gray")
+```
+
+<img src="./figures_House Prices and Correlations-3.png"  />
+
+``` r
+#The plot of standard deviations indicates a conical distribution of deviation, where the gratest deviation is at higher fitted values and a smaller deviation is at lower values. 
+```
+
+The results indicate that there is a fairly strong negative correlation between average house price and interest rate (r = -0.5766, p = 0.01937). However, a linear regression model fit to this data indicates that the data is heteroskedastic and not drawn from normal populations, as such although a linear regression model does fit the data (p=0.01937), the underlying assumptions for the test are violated and a model should not be used.
+
+High interest rates are associated with cheaper homes and vice versa, in this dataset. The predictive value of this data, however, is not beneficial.
